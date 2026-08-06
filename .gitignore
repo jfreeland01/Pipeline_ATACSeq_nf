@@ -1,0 +1,6 @@
+work/
+.nextflow/
+.nextflow.log*
+results/
+results_test/
+.DS_Store

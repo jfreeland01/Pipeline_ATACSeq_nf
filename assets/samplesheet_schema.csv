@@ -1,0 +1,3 @@
+sample,fastq_1,fastq_2
+SAMPLE1,/absolute/path/to/SAMPLE1_R1.fastq.gz,/absolute/path/to/SAMPLE1_R2.fastq.gz
+SAMPLE2,/absolute/path/to/SAMPLE2_R1.fastq.gz,/absolute/path/to/SAMPLE2_R2.fastq.gz
