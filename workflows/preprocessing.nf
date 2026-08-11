@@ -39,7 +39,10 @@ workflow PREPROCESSING {
 
     FASTQC_TRIM(CUTADAPT.out.reads)
 
-    BOWTIE2_ALIGN(CUTADAPT.out.reads, params.bowtie2_index)
+    ch_bt2_index = Channel.value(file(params.bowtie2_index).parent)
+    def bt2_prefix  = file(params.bowtie2_index).name
+
+    BOWTIE2_ALIGN(CUTADAPT.out.reads, ch_bt2_index, bt2_prefix)
 
     SAMTOOLS_SAM_TO_BAM(BOWTIE2_ALIGN.out.sam)
 

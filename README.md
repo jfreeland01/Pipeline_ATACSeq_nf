@@ -10,9 +10,37 @@ stage from the original scripts (consensus peaks, HOMER motif enrichment, wig
 averaging, TSS heatmaps) can also be run on its own with `--stage`, so nothing extra
 needs to be cloned or downloaded.
 
+## Quick start (Linux workstation)
+
+```bash
+# 1. Install Nextflow (requires Java 11+)
+curl -s https://get.nextflow.io | bash
+sudo mv nextflow /usr/local/bin/
+
+# 2. Clone the pipeline
+git clone https://github.com/jfreeland01/Pipeline_ATACSeq_nf.git
+cd Pipeline_ATACSeq_nf
+
+# 3. Create your samplesheet (absolute paths)
+cat > samplesheet.csv <<'EOF'
+sample,fastq_1,fastq_2
+SAMPLE1,/path/to/SAMPLE1_R1.fastq.gz,/path/to/SAMPLE1_R2.fastq.gz
+EOF
+
+# 4. Run preprocessing
+nextflow run . -profile docker \
+    --input samplesheet.csv \
+    --bowtie2_index /path/to/GRCh38_noalt_decoy_as/GRCh38_noalt_decoy_as \
+    --blacklist_bed /path/to/hg38-blacklist.v2_sorted.bed \
+    --outdir results
+```
+
+Add `-resume` to any run command to pick up from the last completed step after an interruption.
+
 ## Requirements
 
-- [Nextflow](https://nextflow.io) >= 23.04 (`brew install nextflow`)
+- [Nextflow](https://nextflow.io) >= 23.04
+- Java 11+ (`sudo apt install default-jdk` on Ubuntu/Debian)
 - [Docker](https://www.docker.com) (`-profile docker`) or [Conda](https://docs.conda.io)/Mamba (`-profile conda`)
 
 Every process pins its own Bioconda package + matching Biocontainers image (see

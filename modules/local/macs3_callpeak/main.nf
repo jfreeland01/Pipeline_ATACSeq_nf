@@ -3,8 +3,8 @@ process MACS3_CALLPEAK {
     label 'process_medium'
     publishDir { "${params.outdir}/macs3/${meta.id}" }, mode: 'copy'
 
-    conda "bioconda::macs3=3.0.1"
-    container "quay.io/biocontainers/macs3:3.0.1--py311h0152cd7_1"
+    conda "bioconda::macs3=3.0.4"
+    container "quay.io/biocontainers/macs3:3.0.4--py312h71493bf_0"
 
     input:
     tuple val(meta), path(bam)

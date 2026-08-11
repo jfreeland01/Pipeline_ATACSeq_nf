@@ -1,6 +1,7 @@
 process BOWTIE2_ALIGN {
     tag "$meta.id"
     label 'process_high'
+    maxForks 1
     publishDir { "${params.outdir}/bowtie2/${meta.id}" }, mode: 'copy', pattern: '*.log'
 
     conda "bioconda::bowtie2=2.5.1"
@@ -8,7 +9,8 @@ process BOWTIE2_ALIGN {
 
     input:
     tuple val(meta), path(reads)
-    val index_prefix
+    path  index_dir
+    val   index_prefix
 
     output:
     tuple val(meta), path("${meta.id}.sam"), emit: sam
@@ -19,7 +21,7 @@ process BOWTIE2_ALIGN {
     """
     bowtie2 --non-deterministic --mm --phred33 --very-sensitive \\
         -p ${task.cpus} \\
-        -x ${index_prefix} \\
+        -x ${index_dir}/${index_prefix} \\
         -1 ${r1} \\
         -2 ${r2} \\
         -S ${meta.id}.sam \\

@@ -14,5 +14,6 @@ process SAMTOOLS_SAM_TO_BAM {
     script:
     """
     samtools view -@ ${task.cpus} -bS -o ${meta.id}.bam ${sam}
+    rm -f \$(realpath ${sam})
     """
 }
