@@ -30,12 +30,12 @@ EOF
 # 4. Run preprocessing
 nextflow run . -profile docker \
     --input samplesheet.csv \
-    --bowtie2_index /path/to/GRCh38_noalt_decoy_as/GRCh38_noalt_decoy_as \
-    --blacklist_bed /path/to/hg38-blacklist.v2_sorted.bed \
-    --outdir results
+    --bowtie2_index /path/to/GRCh38_noalt_decoy_as \
+    --blacklist_bed assets/reference/hg38-blacklist.v2.bed \
+    --chrom_sizes assets/reference/GRCH38_noalt_decoy_as.chrom.sizes \
+    --outdir results \
+    -resume
 ```
-
-Add `-resume` to any run command to pick up from the last completed step after an interruption.
 
 ## Requirements
 
@@ -45,6 +45,19 @@ Add `-resume` to any run command to pick up from the last completed step after a
 
 Every process pins its own Bioconda package + matching Biocontainers image (see
 "A note on container tags" below) — there's no single monolithic environment to build.
+
+## Reference files
+
+- **ENCODE blacklist** (`hg38-blacklist.v2.bed`) and **chrom.sizes**
+  (`GRCH38_noalt_decoy_as.chrom.sizes`), both GRCh38 no-alt+decoy, are bundled in this
+  repo at `assets/reference/` — no download needed, just point `--blacklist_bed` /
+  `--chrom_sizes` at them.
+- **Bowtie2 index** (GRCh38 no-alt+decoy, ~4 GB) is not bundled — download the
+  prebuilt index from
+  [Ben Langmead's AWS Bowtie2 indexes](https://benlangmead.github.io/aws-indexes/bowtie)
+  (`GRCh38_noalt_decoy_as`, direct link:
+  https://genome-idx.s3.amazonaws.com/bt/GRCh38_noalt_decoy_as.zip), unzip it, and
+  point `--bowtie2_index` at the extracted path + prefix.
 
 ## Stages
 
@@ -76,8 +89,8 @@ expects as input.
 nextflow run . -profile docker \
     --input samplesheet.csv \
     --bowtie2_index /path/to/GRCh38_noalt_decoy_as/GRCh38_noalt_decoy_as \
-    --blacklist_bed /path/to/hg38-blacklist.v2_sorted.bed \
-    --chrom_sizes /path/to/GRCh38_noalt_decoy_as.chrom.sizes \
+    --blacklist_bed assets/reference/hg38-blacklist.v2.bed \
+    --chrom_sizes assets/reference/GRCH38_noalt_decoy_as.chrom.sizes \
     --outdir results
 ```
 

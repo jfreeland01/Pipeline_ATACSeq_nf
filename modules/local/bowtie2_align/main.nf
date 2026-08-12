@@ -1,7 +1,7 @@
 process BOWTIE2_ALIGN {
     tag "$meta.id"
     label 'process_high'
-    maxForks 1
+    // maxForks 1  // may be needed if running on a personal laptop to avoid exhausting RAM
     publishDir { "${params.outdir}/bowtie2/${meta.id}" }, mode: 'copy', pattern: '*.log'
 
     conda "bioconda::bowtie2=2.5.1"
