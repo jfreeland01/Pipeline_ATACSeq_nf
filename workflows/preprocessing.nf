@@ -2,7 +2,6 @@ include { FASTQC_RAW }                             from '../modules/local/fastqc
 include { CUTADAPT }                               from '../modules/local/cutadapt'
 include { FASTQC_TRIM }                            from '../modules/local/fastqc_trim'
 include { BOWTIE2_ALIGN }                          from '../modules/local/bowtie2_align'
-include { SAMTOOLS_SAM_TO_BAM }                    from '../modules/local/samtools_sam_to_bam'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_1 }       from '../modules/local/samtools_sort'
 include { SAMTOOLS_INDEX }                         from '../modules/local/samtools_index'
 include { ALIGNMENTSIEVE }                         from '../modules/local/alignmentsieve'
@@ -44,9 +43,7 @@ workflow PREPROCESSING {
 
     BOWTIE2_ALIGN(CUTADAPT.out.reads, ch_bt2_index, bt2_prefix)
 
-    SAMTOOLS_SAM_TO_BAM(BOWTIE2_ALIGN.out.sam)
-
-    SAMTOOLS_SORT_1(SAMTOOLS_SAM_TO_BAM.out.bam)
+    SAMTOOLS_SORT_1(BOWTIE2_ALIGN.out.bam)
     SAMTOOLS_INDEX(SAMTOOLS_SORT_1.out.bam)
 
     ALIGNMENTSIEVE(SAMTOOLS_SORT_1.out.bam.join(SAMTOOLS_INDEX.out.bai))
@@ -70,7 +67,7 @@ workflow PREPROCESSING {
     BAMCOVERAGE(BEDTOOLS_SUBTRACT_BLACKLIST.out.bam.join(SAMTOOLS_INDEX_FINAL.out.bai))
 
     if( params.chrom_sizes ) {
-        BIGWIGTOWIG(BAMCOVERAGE.out.bigwig, params.chrom_sizes)
+        BIGWIGTOWIG(BAMCOVERAGE.out.bigwig)
     }
 
     emit:

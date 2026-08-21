@@ -4,8 +4,13 @@ process BOWTIE2_ALIGN {
     // maxForks 1  // may be needed if running on a personal laptop to avoid exhausting RAM
     publishDir { "${params.outdir}/bowtie2/${meta.id}" }, mode: 'copy', pattern: '*.log'
 
-    conda "bioconda::bowtie2=2.5.1"
-    container "quay.io/biocontainers/bowtie2:2.5.1--py39h6fed5c7_2"
+    // Piped straight into samtools so the SAM (30-60 GB/sample) never touches
+    // disk. That also keeps BOWTIE2_ALIGN's output resumable: an earlier
+    // version wrote the SAM to disk and had a downstream step delete it to
+    // reclaim space, which permanently broke -resume for this (the most
+    // expensive) step on every subsequent run.
+    conda "bioconda::bowtie2=2.5.1 bioconda::samtools=1.18"
+    container "community.wave.seqera.io/library/bowtie2_htslib_samtools_pigz:edeb13799090a2a6"
 
     input:
     tuple val(meta), path(reads)
@@ -13,7 +18,7 @@ process BOWTIE2_ALIGN {
     val   index_prefix
 
     output:
-    tuple val(meta), path("${meta.id}.sam"), emit: sam
+    tuple val(meta), path("${meta.id}.bam"), emit: bam
     tuple val(meta), path("*.log"),          emit: log
 
     script:
@@ -24,7 +29,7 @@ process BOWTIE2_ALIGN {
         -x ${index_dir}/${index_prefix} \\
         -1 ${r1} \\
         -2 ${r2} \\
-        -S ${meta.id}.sam \\
-        2> ${meta.id}_bowtie2.log
+        2> ${meta.id}_bowtie2.log \\
+        | samtools view -@ ${task.cpus} -bS -o ${meta.id}.bam -
     """
 }

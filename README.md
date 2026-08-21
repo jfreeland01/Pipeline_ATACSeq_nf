@@ -104,6 +104,20 @@ SAMPLE2,/absolute/path/to/SAMPLE2_R1.fastq.gz,/absolute/path/to/SAMPLE2_R2.fastq
 
 `--chrom_sizes` is optional — omit it to skip the final bigWig→Wig conversion step.
 
+Example FastQC output at each QC checkpoint in this stage (raw reads, then post-`cutadapt` trim):
+
+<img src="assets/figures/FASTQC_Adapter.png" alt="Example FastQC adapter content on raw reads" width="600"/>
+
+**Example: FastQC adapter content on raw reads** — Nextera adapter over-representation like this is expected pre-trim.
+
+<img src="assets/figures/FASTQC_SeqQual.png" alt="Example FastQC per-base sequence quality" width="600"/>
+
+**Example: FastQC per-base sequence quality**
+
+<img src="assets/figures/FASTQC_Adapter_trim.png" alt="Example FastQC adapter content after cutadapt" width="600"/>
+
+**Example: FastQC adapter content after `cutadapt`** — adapter contamination should be gone post-trim.
+
 ### 2. Consensus peaks
 
 ```bash
@@ -120,6 +134,10 @@ nextflow run . -profile docker --stage motif_enrichment \
     --homer_genome hg38
 ```
 
+<img src="assets/figures/HOMER_Output.png" alt="Example HOMER findMotifsGenome.pl output" width="800"/>
+
+**Example: HOMER `findMotifsGenome.pl` output**
+
 ### 4. Wig averaging
 
 ```bash
@@ -135,6 +153,10 @@ nextflow run . -profile docker --stage tss_heatmap \
     --bigwig_dir results/bigwig \
     --tss_bed /path/to/TSS_1_V2.bed
 ```
+
+<img src="assets/figures/ComputeMatrix_plotHeatmap_OverallTSS.png" alt="Example plotHeatmap output for overall TSS accessibility" width="300"/>
+
+**Example: `plotHeatmap` output for overall TSS accessibility**
 
 See the original repo's README for how to build the `TSS_1_V2.bed` reference file
 from the UCSC Table Browser.
@@ -199,4 +221,6 @@ workflows/motif_enrichment.nf # MOTIF_ENRICHMENT
 workflows/wig_processing.nf   # WIG_MEAN
 workflows/tss_heatmap.nf      # TSS_HEATMAP
 assets/samplesheet_schema.csv # example samplesheet
+assets/reference/              # bundled ENCODE blacklist + chrom.sizes
+assets/figures/                 # example output images used in this README
 ```

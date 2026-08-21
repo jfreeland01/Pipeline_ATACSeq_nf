@@ -4,7 +4,7 @@ process HOMER_FINDMOTIFSGENOME {
     publishDir "${params.outdir}/homer", mode: 'copy'
 
     conda "bioconda::homer=4.11"
-    container "quay.io/biocontainers/homer:4.11--pl5321hdfd78af_5"
+    container "quay.io/biocontainers/homer:4.11--pl5262h4ac6f70_9"
 
     input:
     tuple val(meta), path(peaks_txt)
