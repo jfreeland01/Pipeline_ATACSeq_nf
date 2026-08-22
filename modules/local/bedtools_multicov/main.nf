@@ -8,6 +8,7 @@ process BEDTOOLS_MULTICOV {
     input:
     path merged_bed
     path bams
+    path bais
     val sample_ids
 
     output:
